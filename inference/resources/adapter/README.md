@@ -8,6 +8,7 @@ before building:
 
 The adapter is not part of this repository. It was trained on the ORena FOCUS
 training data, which is covered by the challenge's data usage agreement.
+`training/README.md` describes how to train it.
 
 If there is no `adapter_config.json` here, `inference.py` runs the base
 Qwen3-VL-8B-Instruct model without changes, so the image still builds and runs.

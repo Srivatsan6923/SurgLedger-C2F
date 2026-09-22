@@ -6,8 +6,12 @@ __pycache__/
 *.tar.gz
 
 # weights: base model is downloaded during the build, adapter is not shared
-resources/model/
-resources/adapter/*
-!resources/adapter/README.md
+inference/resources/model/
+inference/resources/adapter/*
+!inference/resources/adapter/README.md
 
-test/output/
+inference/test/output/
+
+# training outputs (default --cache / --out of the training scripts)
+frames/
+runs/

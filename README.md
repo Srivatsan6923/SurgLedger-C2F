@@ -55,30 +55,31 @@ pass sharpens localization inside a neighbourhood the first pass had already fou
 ## Repository layout
 
 ```
-inference.py                  container entry point: batch loop, budget guard, re-read
-resources/surgledger/
-    pipeline.py               Qwen3-VL wrapper: prompting, frame handling, answering
-    decode.py                 keyframe-aligned sampling and time budget helpers
-    format_router.py          answer format routing and serialization
-    template_priors.py        per-template answer priors (tables left empty, see below)
-resources/adapter/            put the LoRA adapter here (not included)
-Dockerfile, requirements.txt  container definition
-do_build.sh, do_test_run.sh, do_save.sh
-                              build, local test run, export for upload (from the template)
-test/input/                   the template's small sample batch
-test_clipsource.py            test for the two input layouts (folders vs. zip)
-figures/                      figures from our method description
+inference/                      the submitted container
+    inference.py                entry point: batch loop, budget guard, re-read
+    resources/surgledger/
+        pipeline.py             Qwen3-VL wrapper: prompting, frame handling, answering
+        decode.py               keyframe-aligned sampling and time budget helpers
+        format_router.py        answer format routing and serialization
+        template_priors.py      per-template answer priors (tables left empty, see below)
+    resources/adapter/          put the LoRA adapter here (not included)
+    Dockerfile, requirements.txt
+    do_build.sh, do_test_run.sh build the image and run it on the sample batch
+    test/input/                 the organizers' small sample batch
+    test_clipsource.py          test for the two input layouts (folders vs. zip)
+training/                       frame cache, LoRA fine-tuning, loader tests
+figures/                        figures from our method description
 ```
 
-## Running it
+## Running the container
 
 You need Docker with the NVIDIA container toolkit and a GPU with enough memory for an
 8B model with long video inputs (we used an L40S and an RTX PRO 6000).
 
 ```bash
+cd inference
 ./do_build.sh       # build the image (downloads Qwen3-VL-8B-Instruct, ~17 GB)
 ./do_test_run.sh    # run on the sample batch in test/input, output in test/output
-./do_save.sh        # export the image as .tar.gz for upload
 ```
 
 The container reads `/input/request.json`, `/input/FO_definitions.json` and the
@@ -89,30 +90,33 @@ into the image.
 The pure-Python parts have self-checks:
 
 ```bash
-cd resources/surgledger
+cd inference/resources/surgledger
 python decode.py && python format_router.py && python template_priors.py && python pipeline.py
 ```
 
-## What is not included
-
-- **LoRA weights.** They were trained on the challenge data, which we are not allowed
-  to redistribute. Without them the container runs the base model. See
-  `resources/adapter/README.md`.
-- **Template prior values.** In the submission, six judge-graded question templates
-  whose answer is almost always the same were answered with that answer directly. The
-  values come from the training annotations, so the tables in `template_priors.py` are
-  empty here and those questions go to the model instead.
-- **Training code.** Only the inference container is in this repository.
-
-## Training summary
+## Training
 
 Single LoRA adapter on Qwen3-VL-8B-Instruct, trained on the FRAME, SEGMENT and
 PROCEDURE training sets of HeiCo-FOCUS-VQA and LapChole-FOCUS-VQA. Rank 32, alpha 64,
 dropout 0.05 on the attention and MLP projections of the language model, vision tower
 frozen. AdamW (lr 1e-4, betas 0.9/0.95, no weight decay), 3% warm-up then cosine decay,
-gradient clipping at 1.0, 2 epochs, effective batch size 16 on 4 GPUs, bf16. We
-warm-started from an early checkpoint of a PROCEDURE-only run. All train/validation
-splits are by whole video, never by question.
+gradient clipping at 1.0, effective batch size 16 on 4 GPUs, bf16. We warm-started
+from an early checkpoint of a PROCEDURE-only run. All train/validation splits are by
+whole video, never by question.
+
+The scripts and the exact commands are in [`training/`](training/README.md).
+
+## What is not included
+
+- **LoRA weights.** They were trained on the challenge data, which we are not allowed
+  to redistribute. Without them the container runs the base model. See
+  `inference/resources/adapter/README.md`.
+- **Template prior values.** In the submission, six judge-graded question templates
+  whose answer is almost always the same were answered with that answer directly. The
+  values come from the training annotations, so the tables in `template_priors.py` are
+  empty here and those questions go to the model instead.
+- **Evaluation harness.** Checkpoint selection and the validation results in Fig. 2
+  used our internal evaluation scripts, which are not part of this repository.
 
 ## Data and acknowledgements
 

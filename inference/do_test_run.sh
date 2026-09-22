@@ -92,4 +92,4 @@ for iface in interface_1 interface_zip; do
     fi
 done
 
-echo "=+= Save this image for uploading via ./do_save.sh"
+echo "=+= Done. Export the image with: docker save procedure-algorithm | gzip -1 > procedure-algorithm.tar.gz"

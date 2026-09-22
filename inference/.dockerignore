@@ -1,0 +1,10 @@
+# Keep the build context small: the sample batch and any exported image
+# archives are not needed inside the image.
+*.tar.gz
+*.tar
+test/
+__pycache__/
+output/
+
+# Base weights are downloaded during the build, not copied in.
+resources/model/

@@ -1,0 +1,12 @@
+# We trained with torch 2.11.0 (CUDA 12.8), the same build as the inference image.
+torch>=2.11.0
+transformers>=5.16.0
+peft>=0.20.0
+accelerate>=1.0.0
+numpy
+pillow
+pyarrow
+# only needed for --push-to
+huggingface_hub
+
+# extract_frames.py also needs ffmpeg and ffprobe on the PATH.
