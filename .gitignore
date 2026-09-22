@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+
+# docker save output
+*.tar
+*.tar.gz
+
+# weights: base model is downloaded during the build, adapter is not shared
+resources/model/
+resources/adapter/*
+!resources/adapter/README.md
+
+test/output/

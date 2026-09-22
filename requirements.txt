@@ -1,0 +1,17 @@
+# torch is already in the base image (CUDA 12.8 build), so nothing is downloaded
+# for this line. Pinning it makes pip fail loudly if some dependency asks for a
+# different torch, instead of silently swapping in a build that does not run on
+# the L40S. The Dockerfile checks the result as well.
+torch==2.11.0
+
+orena-focus>=0.3.4
+
+# Imported directly by inference.py (also comes with orena-focus).
+decord>=0.6.0
+
+# Qwen3VLForConditionalGeneration needs a recent transformers.
+transformers>=5.16.0
+accelerate>=1.0.0
+
+# Only used to merge the LoRA adapter at startup (merge_and_unload).
+peft>=0.20.0
