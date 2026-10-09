@@ -16,9 +16,10 @@ fitted on the training split of the challenge data:
     training rows. Keys use the format returned by route(), since that is all
     the pipeline sees at test time. Six templates made the cut.
 
-The fitted values are derived from the challenge annotations, and the data
-usage agreement does not allow sharing those, so they are left out here. Each
-entry has the form
+The fitted values are derived from the challenge annotations, so they are not
+stored here. `training/fit_template_priors.py` rebuilds both tables from the
+PROCEDURE parquets and writes them into this file, which reproduces the tables
+used in the submission. Each entry has the form
 
     (shell(question), routed_format): (answer, rate, n_rows)
 

@@ -112,9 +112,11 @@ The scripts and the exact commands are in [`training/`](training/README.md).
   to redistribute. Without them the container runs the base model. See
   `inference/resources/adapter/README.md`.
 - **Template prior values.** In the submission, six judge-graded question templates
-  whose answer is almost always the same were answered with that answer directly. The
-  values come from the training annotations, so the tables in `template_priors.py` are
-  empty here and those questions go to the model instead.
+  whose answer is almost always the same were answered with that answer directly.
+  Those values come from the training annotations, so the tables in
+  `template_priors.py` are empty in this repository. Running
+  `training/fit_template_priors.py` on the challenge data rebuilds them and
+  reproduces the tables used in the submission.
 - **Evaluation harness.** Checkpoint selection and the validation results in Fig. 2
   used our internal evaluation scripts, which are not part of this repository.
 

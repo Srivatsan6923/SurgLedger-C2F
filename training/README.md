@@ -9,6 +9,7 @@ trained on the same kind of input it sees in the container.
 | `extract_frames.py` | builds a JPEG frame cache (one frame every 2 s) from the challenge videos |
 | `train_lora.py` | LoRA fine-tuning, single GPU or `torchrun` |
 | `test_curriculum.py` | checks the data loading (window offsets, train/val split) without a GPU |
+| `fit_template_priors.py` | rebuilds the answer prior tables in `template_priors.py` from the data |
 
 ```bash
 pip install -r requirements.txt
@@ -80,6 +81,19 @@ the official scorer, and submitted the one from **step 3200**. To use it, copy
 
 Before a long run, `--max-steps 2 --save-every 100000` does a quick probe that
 prints memory use and sequence length per GPU without writing checkpoints.
+
+## 4. Answer priors
+
+A handful of question templates have an answer that is almost always the same,
+and the pipeline emits it directly for those. The tables are fitted on the
+PROCEDURE annotations and are not stored in the repository, so rebuild them
+before running the container if you want to reproduce the submission exactly:
+
+```bash
+python fit_template_priors.py --data data/
+```
+
+This writes both tables into `inference/resources/surgledger/template_priors.py`.
 
 ## Hardware
 
