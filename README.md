@@ -104,6 +104,10 @@ gradient clipping at 1.0, effective batch size 16 on 4 GPUs, bf16. We warm-start
 from an early checkpoint of a PROCEDURE-only run. All train/validation splits are by
 whole video, never by question.
 
+A few question templates have an answer that is almost always the same, and the
+pipeline emits it directly for those. The values are fitted on the challenge
+annotations and are not stored here; `training/fit_template_priors.py` rebuilds them.
+
 The scripts and the exact commands are in [`training/`](training/README.md).
 
 ## Model weights
@@ -119,17 +123,6 @@ huggingface-cli download srivatsan6923/surgledger-c2f-lora \
 ```
 
 Without the adapter the container still builds and runs, on the base model.
-
-## What is not included
-
-- **Template prior values.** In the submission, six judge-graded question templates
-  whose answer is almost always the same were answered with that answer directly.
-  Those values come from the training annotations, so the tables in
-  `template_priors.py` are empty in this repository. Running
-  `training/fit_template_priors.py` on the challenge data rebuilds them and
-  reproduces the tables used in the submission.
-- **Evaluation harness.** Checkpoint selection and the validation results in Fig. 2
-  used our internal evaluation scripts, which are not part of this repository.
 
 ## Data and acknowledgements
 

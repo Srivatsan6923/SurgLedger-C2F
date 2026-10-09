@@ -86,8 +86,7 @@ prints memory use and sequence length per GPU without writing checkpoints.
 
 A handful of question templates have an answer that is almost always the same,
 and the pipeline emits it directly for those. The tables are fitted on the
-PROCEDURE annotations and are not stored in the repository, so rebuild them
-before running the container if you want to reproduce the submission exactly:
+PROCEDURE annotations, so rebuild them before running the container:
 
 ```bash
 python fit_template_priors.py --data data/

@@ -5,25 +5,18 @@ can be recovered from the question text alone (replace times, numbers and FO
 class names with placeholders, see `shell()`). For a few templates the correct
 answer is almost always the same, and there a constant beats the model.
 
-The tables below are empty in this repository. In our submission they were
-fitted on the training split of the challenge data:
+Two tables, each entry of the form
 
-  * PRIORS: the most common answer for every template with at least 20 rows.
-    Only used for formats listed in pipeline.DEFER_FORMATS, which is empty in
-    the final submission, so this table did not affect any answer.
-  * JUDGE_PRIORS: for the judge-graded formats (open_ended, multiple_choice),
-    templates whose most common answer covers at least 65% of at least 8
-    training rows. Keys use the format returned by route(), since that is all
-    the pipeline sees at test time. Six templates made the cut.
+    (shell(question), format): (answer, rate, n_rows)
 
-The fitted values are derived from the challenge annotations, so they are not
-stored here. `training/fit_template_priors.py` rebuilds both tables from the
-PROCEDURE parquets and writes them into this file, which reproduces the tables
-used in the submission. Each entry has the form
+  * PRIORS: most common answer per template, used only for the formats listed
+    in pipeline.DEFER_FORMATS.
+  * JUDGE_PRIORS: templates in the judge-graded formats whose answer is nearly
+    constant, keyed by the format route() returns.
 
-    (shell(question), routed_format): (answer, rate, n_rows)
-
-With empty tables the pipeline simply answers every question with the model.
+The values are fitted on the challenge annotations and are not stored here;
+`training/fit_template_priors.py` rebuilds them. While the tables are empty,
+every question is answered by the model.
 """
 
 import re

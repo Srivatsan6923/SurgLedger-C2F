@@ -1,25 +1,18 @@
 """Fit the answer prior tables in surgledger/template_priors.py.
 
 FOCUS questions come from a fixed set of templates, and for a few of them the
-answer is almost always the same. The tables are not stored in this repository,
-because they are derived from the challenge annotations. This script rebuilds
-them from the PROCEDURE parquets and writes them back into the module, which
-reproduces the tables used in the submission.
+answer is almost always the same. This script fits both tables on the PROCEDURE
+parquets and writes them into the module.
 
     python fit_template_priors.py --data /path/to/focus
 
-Two tables are written:
-
-  PRIORS         most common answer per (template, released answer_format) over
-                 the train and test splits, for templates with at least 20 rows.
-                 Only used for formats listed in pipeline.DEFER_FORMATS, which is
-                 empty in the final submission.
+  PRIORS         most common answer per (template, answer_format) over the train
+                 and test splits, for templates with at least 20 rows.
   JUDGE_PRIORS   for the judge-graded formats (open_ended, multiple_choice),
                  templates whose most common answer covers at least 65% of at
-                 least 8 training rows. Keyed by the format route() returns,
-                 since that is all the pipeline knows at inference time. Answers
-                 are compared with number words folded to digits and trailing
-                 punctuation ignored, which is the leniency the judge allows.
+                 least 8 training rows, keyed by the format route() returns.
+                 Answers are compared with number words folded to digits and
+                 trailing punctuation ignored, as the judge does.
 """
 import argparse
 import collections
