@@ -610,30 +610,9 @@ def main():
         if ep > 50:
             break
     if rank == 0 and a.max_steps and a.max_steps <= 2:
-        # A probe should not change anything on disk. Use a large --save-every
-        # so no checkpoint is written; the summary below lists what was.
-        P("")
-        P("=== PROBE EPILOGUE ===")
-        P("world=%d effective_batch=%d n_frames=%d max_len=%d"
-          % (world, world * a.accum, a.n_frames, a.max_len))
-        P("samples skipped for exceeding max_len: %d of %d seen  (truncation: NONE -- "
-          "over-length samples are DROPPED, never truncated)" % (skipped, skipped + seen))
-        init = getattr(a, "init_adapter", None)
-        if init and Path(init).exists():
-            import hashlib
-            h = hashlib.sha256()
-            for f in sorted(Path(init).rglob("*")):
-                if f.is_file():
-                    h.update(f.read_bytes())
-            P("init adapter %s sha256=%s  (read-only, never written)"
-              % (init, h.hexdigest()[:16]))
-        outp = Path(a.out)
-        wrote = sorted(p.relative_to(outp).as_posix()
-                       for p in outp.rglob("*") if p.is_file()) if outp.exists() else []
-        P("files written under --out: %s" % (wrote or "NONE"))
-        P("checkpoints written: %d (save_every=%d, so a %d-step probe writes none)"
-          % (len([w for w in wrote if "ckpt-" in w]), a.save_every, a.max_steps))
-        P("=== PROBE COMPLETE -- stopping before any real training ===")
+        # A probe stops here, before the final checkpoint is written. Use a
+        # large --save-every so it writes nothing at all.
+        P("probe finished: %d step(s), %d sample(s) over --max-len" % (step, skipped))
         if ddp:
             dist.destroy_process_group()
         return
