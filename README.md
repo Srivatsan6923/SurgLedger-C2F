@@ -62,7 +62,7 @@ inference/                      the submitted container
         decode.py               keyframe-aligned sampling and time budget helpers
         format_router.py        answer format routing and serialization
         template_priors.py      per-template answer priors (tables left empty, see below)
-    resources/adapter/          put the LoRA adapter here (not included)
+    resources/adapter/          the LoRA adapter goes here (downloaded separately)
     Dockerfile, requirements.txt
     do_build.sh, do_test_run.sh build the image and run it on the sample batch
     test/input/                 the organizers' small sample batch
@@ -106,11 +106,22 @@ whole video, never by question.
 
 The scripts and the exact commands are in [`training/`](training/README.md).
 
+## Model weights
+
+The LoRA adapter from the submitted container is at
+[srivatsan6923/surgledger-c2f-lora](https://huggingface.co/srivatsan6923/surgledger-c2f-lora).
+Download it into `inference/resources/adapter/` before building the image:
+
+```bash
+cd inference/resources/adapter
+huggingface-cli download srivatsan6923/surgledger-c2f-lora \
+    adapter_config.json adapter_model.safetensors --local-dir .
+```
+
+Without the adapter the container still builds and runs, on the base model.
+
 ## What is not included
 
-- **LoRA weights.** They were trained on the challenge data, which we are not allowed
-  to redistribute. Without them the container runs the base model. See
-  `inference/resources/adapter/README.md`.
 - **Template prior values.** In the submission, six judge-graded question templates
   whose answer is almost always the same were answered with that answer directly.
   Those values come from the training annotations, so the tables in
@@ -132,6 +143,14 @@ The frames in Fig. 1 come from a training video of the Heidelberg colorectal dat
 The container setup (`Dockerfile`, `do_*.sh`, sample inputs) is based on the
 organizers' submission template.
 
+## License
+
+The code in this repository is Apache-2.0 (see `LICENSE`). The LoRA weights are
+released for non-commercial research use, because the data they were trained on is:
+HeiCo-FOCUS builds on the Heidelberg colorectal data set (CC BY-NC-SA 4.0), and
+LapChole-FOCUS is covered by the challenge's data usage agreement. This is research
+code from a challenge submission, not a medical device.
+
 ## References
 
 1. Qwen Team. Qwen3 Technical Report. arXiv:2505.09388, 2025.
@@ -139,6 +158,19 @@ organizers' submission template.
 3. Hugging Face. PEFT: Parameter-Efficient Fine-Tuning. https://github.com/huggingface/peft
 4. L. Maier-Hein et al. Heidelberg colorectal data set for surgical data science in the
    sensor operating room. Scientific Data 8, 101, 2021.
+
+## Citation
+
+```bibtex
+@misc{sarvesan2026surgledgerc2f,
+  title  = {SurgLedger-C2F: Self-Guided Coarse-to-Fine Temporal Re-Reading for
+            Long-Horizon Surgical Video Question Answering},
+  author = {Sarvesan, Srivatsan},
+  year   = {2026},
+  note   = {ORena SAVE FOCUS Challenge (PROCEDURE track), MICCAI 2026},
+  url    = {https://github.com/Srivatsan6923/SurgLedger-C2F}
+}
+```
 
 ## Contact
 

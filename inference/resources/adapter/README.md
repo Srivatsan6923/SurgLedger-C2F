@@ -1,19 +1,24 @@
 # LoRA adapter
 
-To reproduce the submitted container, put the adapter files in this folder
-before building:
+The adapter is published at
+[srivatsan6923/surgledger-c2f-lora](https://huggingface.co/srivatsan6923/surgledger-c2f-lora).
+Put it in this folder before building the image:
 
-    adapter_config.json
-    adapter_model.safetensors
+```bash
+huggingface-cli download srivatsan6923/surgledger-c2f-lora \
+    adapter_config.json adapter_model.safetensors --local-dir .
+```
 
-The adapter is not part of this repository. It was trained on the ORena FOCUS
-training data, which is covered by the challenge's data usage agreement.
-`training/README.md` describes how to train it.
+`inference.py` merges it into the base weights at startup. If there is no
+`adapter_config.json` here, the base Qwen3-VL-8B-Instruct model runs unchanged,
+so the image still builds and runs.
 
-If there is no `adapter_config.json` here, `inference.py` runs the base
-Qwen3-VL-8B-Instruct model without changes, so the image still builds and runs.
+The weights are the ones in the submitted container,
+`adapter_model.safetensors` with sha256
+`0d4a2831a3acb407fc3eb899b0e750a8d0d41ad60b6b6db2b79f258db8ff2c12`. The only
+difference is `adapter_config.json`, where `base_model_name_or_path` now points
+at the public base model instead of the local path it was trained from.
 
-Adapter settings: LoRA rank 32, alpha 64, dropout 0.05, applied to
-q/k/v/o_proj and gate/up/down_proj of the language model. The vision tower was
-frozen. The adapter is merged into the base weights at startup
-(`merge_and_unload`).
+Settings: LoRA rank 32, alpha 64, dropout 0.05, applied to q/k/v/o_proj and
+gate/up/down_proj of the language model, vision tower frozen.
+`training/README.md` describes how it was trained.
