@@ -1,4 +1,4 @@
-# SurgLedger-C2F
+# SurgLedger-C2F: Long-Horizon Surgical VQA with Self-Guided Temporal Refinement
 
 Our submission to the **PROCEDURE track of the ORena FOCUS Challenge (MICCAI 2026)**:
 video question answering about foreign objects (sponges, clips, needles, ...) over
